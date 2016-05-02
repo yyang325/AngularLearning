@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+	<script>
+		
+		/**
+		* MainApp Module
+		*
+		* Description
+		*/
+		angular.module('mainApp', ['finance'])
+		.controller('mainCtrl', ['currencyConverter', function(currencyConverter){
+			this.qty = 2;
+			this.cost = 5;
+			this.inCurr = 'EUR';
+			this.currencies = currencyConverter.currencies;
+
+			this.total = function(outCurr){
+				return currencyConverter.convert(this.qty*this.cost, this.inCurr, outCurr);
+			}
+
+			this.pay = function(){
+				window.alert("Thanks!");
+			}
+		}]);
+
+
+
+		/**
+		* finance Module
+		*
+		* Description
+		*/
+		angular.module('finance', [])
+		.service('currencyConverter', ['$http', function($http){
+
+			var YAHOO_FINANCE_URL_PATTERN =
+        '//query.yahooapis.com/v1/public/yql?q=select * from '+
+        'yahoo.finance.xchange where pair in ("PAIRS")&format=json&'+
+        'env=store://datatables.org/alltableswithkeys&callback=JSON_CALLBACK';
+
+			var currencies = ['USD', 'EUR', 'CNY'];
+			var usd2others = {};
+
+			var convert = function(amount, inCurr, outCurr){
+				return amount * usd2others[outCurr] / usd2others[inCurr];
+			};
+
+			var refresh = function(){
+				var url = YAHOO_FINANCE_URL_PATTERN.replace('PAIRS', 'USD'+currencies.join('"."USD'));
+				return $http.jsonp(url).then(function(response){
+					var newUsd2others = {};
+					angular.forEach(response.data.query.results.rate, function(rate){
+						var currency = rate.id.substring(3,6);
+						newUsd2others[currency] = window.parseFloat(rate.Rate);
+					});
+					usd2others = newUsd2others;
+				});
+			};
+		}]);
+	</script>
+</head>
+<body ng-app="mainApp" ng-controller="mainCtrl as main">
+
+	<b>Invoice:</b>
+	<div>Quantity: <input type="number" ng-model="main.qty"></input></div><br>
+	<div>Cost: <input type="number" ng-model="main.cost"></div>
+	<select ng-model="main.inCurr">
+		<option ng-repeat="c in main.currencies">{{c}}</option>
+	</select>
+	<hr>
+	<div>
+		<b>Total:</b>
+		<div ng-repeat="c in main.currencies">
+			{{main.total(c) | currency:c}}
+		</div>
+		<button ng-click="main.pay()">Pay</button>
+	</div>
+</body>
+</html>
