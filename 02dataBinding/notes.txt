@@ -1,0 +1,6 @@
+Data-binding in Angular apps is the automatic synchronization of data between the model and view components. When the model changes, the view reflects the change, and vice versa.
+
+Angular templates work differently. First the template (which is the uncompiled HTML along with any additional markup or directives) is compiled on the browser. The compilation step produces a live view. Any changes to the view are immediately reflected in the model, and any changes in the model are propagated to the view. The model is the single-source-of-truth for the application state, greatly simplifying the programming model for the developer. You can think of
+the view as simply an instant projection of your model.
+
+
