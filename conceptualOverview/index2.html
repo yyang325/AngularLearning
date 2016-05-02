@@ -7,19 +7,31 @@
 	<script>
 		var app = angular.module('mainApp', []);
 		app.controller('mainCtrl', function(){
-			this.age = '';
-			this.name = "";	
-			this.changeName = function(){
-				this.name = "Mike";
-				this.age = 83;
+			this.quantity = 10;
+			this.cost = 5;
+			this.currencies = ['USD', 'EUR', 'CNY'];
+			this.intype = 'EUR';
+			this.usd2other = {
+				'USD': 1,
+				'EUR': 0.74,
+				'CNY': 6.59
+			}
+			
+			this.convert = function(outtype){
+				return this.quantity*this.cost * this.usd2other[outtype] / this.usd2other[this.intype];
 			}
 		});
 	</script>
 </head>
 <body ng-app="mainApp" ng-controller="mainCtrl as main">
-	<input type="text" placeholder="Name" ng-model="main.name"> <input type="number" placeholder="Age" ng-model='main.age'><br>
-	<p>Hi, <b>{{main.name}}</b>({{main.age}})</p>
-	<button ng-click="main.changeName()">rename</button>
-
+	<span>Quantity:</span><input type="number" placeholder="Quantity" ng-model="main.quantity"><br>
+	<span>Cost:</span><input type="number" placeholder="Cost" ng-model="main.cost"><select ng-model="main.intype"><option ng-repeat="c in main.currencies">{{c}}</option></select><br>
+	<hr>
+	<b>Total:</b>
+	<div ng-repeat="c in main.currencies">
+		<span>{{main.convert(c) | currency:c}}</span><br>
+	</div>
+	<hr>
+	<button ng-click="pay()">Pay</button>
 </body>
 </html>
