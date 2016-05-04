@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Scope Inheritance</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script>
+  	(function(angular){
+  		'use strict';
+  		var app = angular.module('mainApp', []);
+  		app.controller('GreetController', ['$scope', '$rootScope', function($scope, $rootScope){
+  			$scope.name = "World";
+  			$rootScope.department = 'Angular';
+  		}]).controller('ListController', ['$scope', function($scope){
+  			$scope.names = ['Frank', 'Mike', 'Alan'];
+  		}]);
+  	})(window.angular);
+  </script>
+
+  <style>
+		.show-scope-demo.ng-scope,
+		.show-scope-demo .ng-scope  {
+		  border: 1px solid red;
+		  margin: 3px;
+		}
+  </style>
+</head>
+<body ng-app="mainApp">
+	<div class="show-scope-demo">
+	  <div ng-controller="GreetController">
+	    Hello {{name}}!
+	  </div>
+	  <div ng-controller="ListController">
+	    <ol>
+	      <li ng-repeat="name in names">{{name}} from {{department}}</li>
+	    </ol>
+	  </div>
+	</div>
+</body>
+</html>
