@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+
+	<style>
+		div.spicy div{
+			padding: 10px;
+			border: solid 2px lightblue;
+		}
+	</style>
+
+	<script>
+		var app = angular.module('mainApp', []);
+		app.controller('MainController', ['$scope', function($scope){
+			$scope.timeOfDay = 'morning';
+			$scope.name = 'Mike';
+		}]);
+		app.controller('ChildControlelr', ['$scope', function($scope){
+			$scope.timeOfDay = 'afternoon';
+			$scope.name = 'Tom';
+			$scope.message = $scope.name + ', nice to meet you!'
+		}]);
+		app.controller('GrandChildController', ['$scope', function($scope){
+			$scope.timeOfDay = 'evening';
+			$scope.name = 'Alice';
+		}]);
+	</script>
+</head>
+<body ng-app="mainApp" >
+	<h1>Scope Inheritance Example</h1>
+	<div class="spicy">
+		<div ng-controller="MainController">
+			<input type="text" ng-model="name">
+			<p>Good {{timeOfDay}}, {{name}}!</p>
+
+			<div ng-controller="ChildControlelr">
+				<input type="text" ng-model="name"><br>
+				<input type="text" ng-model="message" placeholder="message">
+				<p>Good {{timeOfDay}}, {{name}}!</p>
+
+				<div ng-controller="GrandChildController">
+					<input type="text" ng-model="name">
+					<p>Good {{timeOfDay}}, {{name}}!</p>
+					<p>{{message}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
