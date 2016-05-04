@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Service Example</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script>
+  	(function(angular){
+  		'use strict';
+  		angular.module('myServiceModule', [])
+  			.controller('MyController', ['$scope','myService', function($scope, service){
+  				$scope.callNotify = function(){
+  					service($scope.message);
+  				}
+  			}])
+  			.factory('myService',['$window', function(win){
+  				var msgs = [];
+  				return function (msg){
+  					msgs.push(msg);
+  					if(msgs.length == 3){
+  						win.alert(msgs.join('\n'));
+  						msgs = [];
+  					}
+  				}
+  			}]);
+  	})(window.angular);
+  </script>
+</head>
+<body ng-app="myServiceModule">
+  <div id="simple" ng-controller="MyController">
+	  <p>Let's try this simple notify service, injected into the controller...</p>
+	  <input ng-init="message='test'" ng-model="message" >
+	  <button ng-click="callNotify(message);">NOTIFY</button>
+	  <p>(you have to click 3 times to see an alert)</p>
+	</div>
+</body>
+</html>
